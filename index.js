@@ -1,3 +1,10 @@
+// Device uchun unik ID yaratish va saqlash
+if (!localStorage.getItem('deviceId')) {
+  localStorage.setItem('deviceId', 'device-' + Math.random().toString(36).substring(2, 10));
+}
+const deviceId = localStorage.getItem('deviceId');
+
+// Postsni olish
 const postContent = document.querySelector("#postContent");
 let api_url = "https://68faeedd94ec96066023f9af.mockapi.io/api/postappv1/posts";
 
@@ -9,8 +16,7 @@ async function getPosts() {
     postContent.innerHTML = ``;
     data.forEach((item) => {
       const newPost = document.createElement("div");
-      newPost.className =
-        "backdrop-blur-lg bg-white/30 rounded-2xl p-6 shadow-lg h-[32vh]";
+      newPost.className = "backdrop-blur-lg bg-white/30 rounded-2xl p-6 shadow-lg h-[32vh]";
       newPost.innerHTML = `<h3 class="text-xl font-semibold mb-2">
             ${item.title}
           </h3>
@@ -26,18 +32,17 @@ async function getPosts() {
 
 getPosts();
 
+// Admin pagega o'tish
 async function getAdminPage() {
   try {
-    const res = await fetch("https://api.ipify.org?format=json");
-    const data = await res.json();
-    localStorage.setItem("userIP", data.ip);
     window.location = "./add_post.html";
   } catch (err) {
-    console.error("IP olinmadi", err);
+    console.error("Error", err);
     window.location = "./index.html";
   }
 }
 
+// My posts panel
 const myPosts = document.querySelector('#myPosts');
 const inputTitle = document.querySelector('#title');
 const textarea = document.querySelector('#body');
@@ -53,9 +58,8 @@ async function getMyPosts() {
     allPosts = data;
     myPosts.innerHTML = ``;
 
-    const sortData = data.filter(
-      (item) => item.device == localStorage.getItem('userIP')
-    );
+    // Faqat shu deviceId ga tegishli postlar
+    const sortData = data.filter((item) => item.device === deviceId);
 
     if (sortData.length === 0) {
       myPosts.innerHTML = `
@@ -87,6 +91,7 @@ async function getMyPosts() {
 }
 getMyPosts();
 
+// Edit post
 myPosts.addEventListener('click', (e) => {
   if (e.target.classList.contains('edit-btn')) {
     const postId = e.target.closest('[data-id]').dataset.id;
@@ -102,13 +107,14 @@ myPosts.addEventListener('click', (e) => {
   }
 });
 
+// Add/Change post
 btn.addEventListener('click', async (e) => {
   e.preventDefault();
 
   const newPost = {
     title: inputTitle.value.trim(),
     body: textarea.value.trim(),
-    device: localStorage.getItem('userIP'),
+    device: deviceId, // shu yerda deviceId ishlatiladi
     date: new Date().toISOString(),
   };
 
@@ -126,11 +132,9 @@ btn.addEventListener('click', async (e) => {
       });
 
       if (res.ok) {
-        console.log('Success!');
+        console.log('Post updated!');
         editingPostId = null;
         btn.value = 'Add Post';
-      } else {
-        console.log('Error');
       }
     } else {
       newPost.id = Math.round(Math.random() * 1000);
@@ -141,9 +145,7 @@ btn.addEventListener('click', async (e) => {
       });
 
       if (res.ok) {
-        console.log('Success!');
-      } else {
-        console.log('Error');
+        console.log('Post added!');
       }
     }
 
@@ -156,7 +158,8 @@ btn.addEventListener('click', async (e) => {
   }
 });
 
-document.querySelector('#myPosts').addEventListener('click', async (e) => {
+// Delete post
+myPosts.addEventListener('click', async (e) => {
   if (e.target.classList.contains('delete-btn')) {
     const postId = e.target.closest('[data-id]').dataset.id;
 
@@ -164,15 +167,11 @@ document.querySelector('#myPosts').addEventListener('click', async (e) => {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`${api_url}/${postId}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(`${api_url}/${postId}`, { method: 'DELETE' });
 
       if (res.ok) {
-        console.log(`Post (ID: ${postId}) Success`);
+        console.log(`Post (ID: ${postId}) deleted!`);
         e.target.closest('[data-id]').remove();
-      } else {
-        console.log("Error");
       }
     } catch (err) {
       console.log("Error:", err);
