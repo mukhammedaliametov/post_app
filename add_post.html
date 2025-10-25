@@ -18,29 +18,39 @@
   </head>
   <body>
     <div class="container mx-auto px-[16px] xl:px-0 font-poppins">
-      <a href="./index.html" class="absolute top-0 right-0 m-[10px] flex items-center gap-[10px]">
-        <p class="font-poppins">Exit</p><i class="fa-solid fa-right-from-bracket"></i>
+      <a
+        href="./index.html"
+        class="absolute top-0 right-0 m-[10px] flex items-center gap-[10px]"
+      >
+        <p class="font-poppins">Quit</p>
+        <i class="fa-solid fa-right-from-bracket"></i>
       </a>
       <div class="flex justify-center items-center mt-[60px]">
         <form
+          id="postForm"
+          onsubmit="sendPost(event)"
           class="flex justify-center gap-[20px] flex-col w-[500px] backdrop-blur-lg bg-white/30 rounded-2xl p-6 shadow-lg"
         >
           <span class="mb-[-10px]">New Post</span>
           <input
             type="text"
+            id="title"
             placeholder="Title"
+            required
             class="py-[8px] px-[10px] border border-[#00000056] rounded-[6px] outline-none text-[15px]"
           />
           <textarea
             placeholder="Type something..."
             class="py-[8px] px-[10px] border border-[#00000056] rounded-[6px] outline-none resize-none mt-[-8px] text-[15px]"
             rows="8"
+            id="body"
+            required
           ></textarea>
-          <button
-            class="px-6 mt-[-8px] py-3 rounded-xl text-[14px] bg-[#fff] font-medium border border-[#e0cfff] hover:bg-[#f8f4ff] transition-all cursor-pointer"
-          >
-            Send
-          </button>
+          <input
+          type="submit"
+          value="Send"
+            class="px-6 mt-[-8px] py-3 rounded-xl text-[14px] bg-[#fff] font-medium border border-[#e0cfff] hover:bg-[#f8f4ff] transition-all cursor-pointer btn"
+          />
         </form>
       </div>
       <div class="mt-[30px]">
@@ -49,18 +59,12 @@
         >
           Your posts
         </p>
-        <div class="flex flex-col gap-[15px] mt-[20px]">
-          <div class="flex items-center justify-between backdrop-blur-lg bg-white/30 rounded-2xl p-4 md:p-6 shadow-lg">
-            <p class="text-[14px] lg:text-[16px]">Lorem ipsum dolor sit amet...</p>
-            <p class="hidden xl:block">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore
-            dolorem nesciunt laboriosam praesentium...</p>
-            <div class="flex items-center gap-[10px]">
-              <i class="fa-solid fa-pen-to-square text-yellow-500 text-[18px] cursor-pointer" title="Update"></i>
-              <i class="fa-solid fa-trash text-red-500 text-[18px] cursor-pointer" title="Delete"></i>
-            </div>
-          </div>
+        <div id="myPosts" class="flex flex-col gap-[15px] mt-[20px]">
+          <h1 class="text-center">Yuklanmoqda...</h1>
         </div>
       </div>
     </div>
+    <div class="pb-[20px]"></div>
+    <script src="./index.js" defer></script>
   </body>
 </html>
